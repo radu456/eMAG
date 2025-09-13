@@ -1,4 +1,4 @@
-const CACHE_NAME = 'emag-calc-v1';
+const CACHE_NAME = 'eMAG';
 const APP_SHELL = [
   '/eMAG/index.html',
   '/eMAG/manifest.json',
