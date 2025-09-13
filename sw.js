@@ -1,12 +1,11 @@
 /* Service Worker pentru eMAG Calc â v1 */
 const CACHE_NAME = 'emag-calc-v1';
 const APP_SHELL = [
-  './',
-  './index.html',
-  './offline.html',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
+  '/eMAG/index.html',
+'/eMAG/manifest.json',
+'/eMAG/offline.html',
+'/eMAG/icons/icon-192.png',
+'/eMAG/icons/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
