@@ -1,11 +1,10 @@
-/* Service Worker pentru eMAG Calc â v1 */
 const CACHE_NAME = 'emag-calc-v1';
 const APP_SHELL = [
   '/eMAG/index.html',
-'/eMAG/manifest.json',
-'/eMAG/offline.html',
-'/eMAG/icons/icon-192.png',
-'/eMAG/icons/icon-512.png'
+  '/eMAG/manifest.json',
+  '/eMAG/offline.html',
+  '/eMAG/icons/icon-192.png',
+  '/eMAG/icons/icon-512.png'
 ];
 
 self.addEventListener('install', (event) => {
@@ -22,22 +21,19 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Network-first pentru navigaČii (pagini), cu fallback la cache apoi offline.html
 async function handleNavigation(request) {
   try {
     const netResponse = await fetch(request);
-    // cache noua versiune in background
     const cache = await caches.open(CACHE_NAME);
     cache.put(request, netResponse.clone());
     return netResponse;
   } catch (err) {
     const cache = await caches.open(CACHE_NAME);
     const cached = await cache.match(request);
-    return cached || cache.match('./offline.html');
+    return cached || cache.match('/eMAG/offline.html');
   }
 }
 
-// Stale-while-revalidate pentru resurse statice GET
 async function handleStatic(request) {
   const cache = await caches.open(CACHE_NAME);
   const cached = await cache.match(request);
@@ -55,19 +51,16 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
 
-  // TrateazÄ navigaČiile (document)
   if (request.mode === 'navigate') {
     event.respondWith(handleNavigation(request));
     return;
   }
 
-  // AceeaČi origine: static SWR
   if (url.origin === self.location.origin) {
     event.respondWith(handleStatic(request));
     return;
   }
 
-  // Alte origini: ĂŽncearcÄ reČea, apoi cache
   event.respondWith(
     fetch(request).catch(() => caches.match(request))
   );
