@@ -1,9 +1,9 @@
 {
-"name": "Calculator preț eMAG",
+  "name": "Calculator preț eMAG",
   "short_name": "eMAG Calc",
   "description": "Calculator rapid pentru prețul final pe eMAG (costuri, TVA, comision) – PWA instalabilă.",
-  "start_url": "./index.html",
-  "scope": "./",
+  "start_url": "/eMAG/index.html",
+  "scope": "/eMAG/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b1020",
@@ -12,14 +12,12 @@
     {
       "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     },
     {
       "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "any"
+      "type": "image/png"
     }
   ]
 }
