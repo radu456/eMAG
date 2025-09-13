@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <link rel="manifest" href="./manifest.json" />
+<meta name="theme-color" content="#8b5cf6" />
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Calculator preț eMAG – FINAL</title>
+<style>
+  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0b1020;color:#e5e7eb}
+  .wrap{max-width:1200px;margin:32px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  h1{font-size:24px;margin-bottom:8px;grid-column:span 2;text-align:center}
+  .card{background:#121932;padding:16px;border-radius:12px}
+  label{display:block;margin-top:10px;font-size:13px}
+  input,select{width:100%;padding:8px;border-radius:8px;border:1px solid #444;background:#0b1020;color:#fff}
+  button{margin-top:16px;padding:10px 16px;border:0;border-radius:8px;background:#8b5cf6;color:#fff;cursor:pointer}
+  .out div{margin-bottom:6px}
+  .final{font-size:18px;font-weight:bold;color:#8b5cf6;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Calculator preț eMAG – FINAL</h1>
+
+  <!-- Formular (stânga) -->
+  <div class="card">
+    <label>Cost achiziție produs (fără TVA, inclusiv transport)</label>
+    <input type="number" id="cProd" placeholder="ex. 5.21" step="0.01">
+
+    <label>Ambalare (fără TVA)</label>
+    <input type="number" id="cPack" placeholder="ex. 0.5" step="0.01">
+
+    <label>Alte costuri (fără TVA)</label>
+    <input type="number" id="cOther" placeholder="ex. 0" step="0.01">
+
+    <label>Tip profit</label>
+    <select id="profitType" onchange="updateUnit()">
+      <option value="pct">Procent din produs (%)</option>
+      <option value="lei">Sumă fixă (lei)</option>
+    </select>
+
+    <label>Valoare profit (<span id="profitUnit">%</span>)</label>
+    <input type="number" id="profitVal" placeholder="ex. 150" step="0.01">
+
+    <label>TVA (%)</label>
+    <input type="number" id="tva" placeholder="21" step="0.01">
+
+    <label>Comision eMAG (%)</label>
+    <input type="number" id="k" placeholder="15" step="0.01">
+
+    <button onclick="calc()">Calculează</button>
+  </div>
+
+  <!-- Rezultate (dreapta) -->
+  <div class="card out">
+    <h2>Rezultate</h2>
+    <div id="outC">Cost total (fără TVA): –</div>
+    <div id="outProfitBase">Bază profit (doar PRODUS): –</div>
+    <div id="outProfit">Profit dorit (calculat doar din produs): –</div>
+    <div id="outBase">Bază (Cost total + Profit): –</div>
+    <div id="outPct">Procent total taxe (TVA+eMAG): –</div>
+    <div class="final" id="outFinal">Preț listare final: –</div>
+  </div>
+</div>
+
+<script>
+function num(x){return isNaN(x)||x===""?0:parseFloat(x)}
+function fmt(x){return new Intl.NumberFormat('ro-RO',{minimumFractionDigits:2,maximumFractionDigits:2}).format(x)}
+function updateUnit(){
+  const type=document.getElementById('profitType').value
+  document.getElementById('profitUnit').textContent=(type==="pct"?"%":"lei")
+}
+function calc(){
+  const cProd=num(document.getElementById('cProd').value)
+  const cPack=num(document.getElementById('cPack').value)
+  const cOther=num(document.getElementById('cOther').value)
+  const profitType=document.getElementById('profitType').value
+  const profitVal=num(document.getElementById('profitVal').value)
+  const tva=num(document.getElementById('tva').value)/100
+  const k=num(document.getElementById('k').value)/100
+
+  // cost total = produs + ambalare + alte costuri (fără TVA)
+  const C=cProd+cPack+cOther
+
+  // PROFIT:
+  // - procent -> DOAR din produs
+  // - lei -> sumă fixă
+  let profit=0
+  if(profitType==="pct"){
+    profit=cProd*profitVal/100        // *** DOAR DIN PRODUS ***
+  }else{
+    profit=profitVal
+  }
+
+  const bazaProfit=cProd              // pentru afișare: de aici se calculează procentul
+  const baza=C+profit                 // ce trebuie să rămână după taxe
+  const pctTotal=tva+k
+  if(pctTotal>=1){
+    document.getElementById('outFinal').textContent="Eroare: TVA+comision prea mari!"
+    return
+  }
+
+  // preț final astfel încât după scăderea procentului total să rămână 'baza'
+  const finalPrice=baza/(1-pctTotal)
+
+  // output
+  document.getElementById('outC').textContent="Cost total (fără TVA): "+fmt(C)+" lei"
+  document.getElementById('outProfitBase').textContent="Bază profit (doar PRODUS): "+fmt(bazaProfit)+" lei"
+  document.getElementById('outProfit').textContent="Profit dorit (calcul doar din produs): "+fmt(profit)+" lei"
+  document.getElementById('outBase').textContent="Bază (Cost total + Profit): "+fmt(baza)+" lei"
+  document.getElementById('outPct').textContent="Procent total taxe (TVA+eMAG): "+fmt(pctTotal*100)+" %"
+  document.getElementById('outFinal').textContent="Preț listare final: "+fmt(finalPrice)+" lei"
+}
+</script>
+  <script src="./register-sw.js"></script>
+</body>
+</html>
