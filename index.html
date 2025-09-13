@@ -1,28 +1,27 @@
 <!DOCTYPE html>
 <html lang="ro">
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Calculator preț eMAG – FINAL</title>
   <link rel="manifest" href="/eMAG/manifest.json" />
-<meta name="theme-color" content="#8b5cf6" />
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Calculator preț eMAG – FINAL</title>
-<style>
-  body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0b1020;color:#e5e7eb}
-  .wrap{max-width:1200px;margin:32px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
-  h1{font-size:24px;margin-bottom:8px;grid-column:span 2;text-align:center}
-  .card{background:#121932;padding:16px;border-radius:12px}
-  label{display:block;margin-top:10px;font-size:13px}
-  input,select{width:100%;padding:8px;border-radius:8px;border:1px solid #444;background:#0b1020;color:#fff}
-  button{margin-top:16px;padding:10px 16px;border:0;border-radius:8px;background:#8b5cf6;color:#fff;cursor:pointer}
-  .out div{margin-bottom:6px}
-  .final{font-size:18px;font-weight:bold;color:#8b5cf6;margin-top:12px}
-</style>
+  <meta name="theme-color" content="#8b5cf6" />
+  <style>
+    body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#0b1020;color:#e5e7eb}
+    .wrap{max-width:1200px;margin:32px auto;padding:0 16px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    h1{font-size:24px;margin-bottom:8px;grid-column:span 2;text-align:center}
+    .card{background:#121932;padding:16px;border-radius:12px}
+    label{display:block;margin-top:10px;font-size:13px}
+    input,select{width:100%;padding:8px;border-radius:8px;border:1px solid #444;background:#0b1020;color:#fff}
+    button{margin-top:16px;padding:10px 16px;border:0;border-radius:8px;background:#8b5cf6;color:#fff;cursor:pointer}
+    .out div{margin-bottom:6px}
+    .final{font-size:18px;font-weight:bold;color:#8b5cf6;margin-top:12px}
+  </style>
 </head>
 <body>
 <div class="wrap">
   <h1>Calculator preț eMAG – FINAL</h1>
 
-  <!-- Formular (stânga) -->
   <div class="card">
     <label>Cost achiziție produs (fără TVA, inclusiv transport)</label>
     <input type="number" id="cProd" placeholder="ex. 5.21" step="0.01">
@@ -51,7 +50,6 @@
     <button onclick="calc()">Calculează</button>
   </div>
 
-  <!-- Rezultate (dreapta) -->
   <div class="card out">
     <h2>Rezultate</h2>
     <div id="outC">Cost total (fără TVA): –</div>
@@ -79,31 +77,18 @@ function calc(){
   const tva=num(document.getElementById('tva').value)/100
   const k=num(document.getElementById('k').value)/100
 
-  // cost total = produs + ambalare + alte costuri (fără TVA)
   const C=cProd+cPack+cOther
-
-  // PROFIT:
-  // - procent -> DOAR din produs
-  // - lei -> sumă fixă
   let profit=0
-  if(profitType==="pct"){
-    profit=cProd*profitVal/100        // *** DOAR DIN PRODUS ***
-  }else{
-    profit=profitVal
-  }
-
-  const bazaProfit=cProd              // pentru afișare: de aici se calculează procentul
-  const baza=C+profit                 // ce trebuie să rămână după taxe
+  if(profitType==="pct"){ profit=cProd*profitVal/100 } else { profit=profitVal }
+  const bazaProfit=cProd
+  const baza=C+profit
   const pctTotal=tva+k
   if(pctTotal>=1){
     document.getElementById('outFinal').textContent="Eroare: TVA+comision prea mari!"
     return
   }
-
-  // preț final astfel încât după scăderea procentului total să rămână 'baza'
   const finalPrice=baza/(1-pctTotal)
 
-  // output
   document.getElementById('outC').textContent="Cost total (fără TVA): "+fmt(C)+" lei"
   document.getElementById('outProfitBase').textContent="Bază profit (doar PRODUS): "+fmt(bazaProfit)+" lei"
   document.getElementById('outProfit').textContent="Profit dorit (calcul doar din produs): "+fmt(profit)+" lei"
@@ -112,6 +97,6 @@ function calc(){
   document.getElementById('outFinal').textContent="Preț listare final: "+fmt(finalPrice)+" lei"
 }
 </script>
-  <script src="/eMAG/register-sw.js"></script>
+<script src="/eMAG/register-sw.js"></script>
 </body>
 </html>
